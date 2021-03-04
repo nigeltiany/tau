@@ -364,7 +364,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
             ),
             onPressed: _player.isPaused ? resume : _player.isPlaying ? pause : null,
           ),
-          SizedBox(width: 4),
+          SizedBox(width: 8),
           Expanded(child: Column(children: rows)),
           SizedBox(width: 12)
         ],
