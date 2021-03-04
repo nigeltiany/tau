@@ -612,29 +612,25 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
       button = _buildPlayButtonIcon(button);
     }
     return Container(
-        width: 30,
-        //height: 30,
-        child: Padding(
-            padding: EdgeInsets.only(left: 0, right: 0),
-            child: FutureBuilder<bool>(
-                future: canPlay,
-                builder: (context, asyncData) {
-                  var _canPlay = false;
-                  if (asyncData.connectionState == ConnectionState.done) {
-                    _canPlay = asyncData.data && !__transitioning;
-                  }
-
-                  return InkWell(
-                      onTap: _canPlay &&
-                              (_playState == _PlayState.stopped ||
-                                  _playState == _PlayState.playing ||
-                                  _playState == _PlayState.paused)
-                          ? () {
-                              return _onPlay(context);
-                            }
-                          : null,
-                      child: button);
-                })));
+      decoration: BoxDecoration(
+        color: _backgroundColor,
+        borderRadius: BorderRadius.circular(SoundPlayerUI._barHeight / 2),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildPlayButton(),
+          IconButton(
+            icon: Icon(
+              _player.isPaused ? Icons.play_arrow : Icons.pause,
+              color: _player.isStopped ? _disabledIconColor : Colors.black,
+            ),
+            onPressed: _player.isPaused ? resume : _player.isPlaying ? pause : null,
+          ),
+          Expanded(child: Column(children: rows))
+        ],
+      ),
+    );
   }
 
   Widget _buildPlayButtonIcon(Widget widget) {
