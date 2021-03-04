@@ -364,6 +364,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
             ),
             onPressed: _player.isPaused ? resume : _player.isPlaying ? pause : null,
           ),
+          SizedBox(width: 4),
           Expanded(child: Column(children: rows)),
           SizedBox(width: 12)
         ],
@@ -667,7 +668,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
               disposition.position.inMilliseconds,
               isUtc: true);
           return Text(
-            '${positionDate.minute.toString().padLeft(2, '0')}:${positionDate.second.toString().padLeft(2, '0')} \n ${durationDate.minute.toString().padLeft(2, '0')}:${durationDate.second.toString().padLeft(2, '0')}',
+            '${positionDate.minute.toString().padLeft(2, '0')}:${positionDate.second.toString().padLeft(2, '0')}\n${durationDate.minute.toString().padLeft(2, '0')}:${durationDate.second.toString().padLeft(2, '0')}',
             style: _textStyle,
           );
         });
