@@ -347,32 +347,28 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     if (widget._showTitle && _track != null) rows.add(_buildTitle());
 
     return Container(
-        //height: 70,
-        decoration: BoxDecoration(
-            color: _backgroundColor,
-            borderRadius: BorderRadius.circular(SoundPlayerUI._barHeight / 2)),
-        child: Row(children: [
-          SizedBox(
-            width: 20,
-          ),
+      //height: 70,
+      decoration: BoxDecoration(
+        color: _backgroundColor,
+        borderRadius: BorderRadius.circular(SoundPlayerUI._barHeight / 2),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          SizedBox(width: 12),
           _buildPlayButton(),
-          SizedBox(
-            height: 50,
-            width: 30,
-            child: InkWell(
-              onTap: _player.isPaused
-                  ? resume
-                  : _player.isPlaying
-                      ? pause
-                      : null,
-              child: Icon(
-                _player.isPaused ? Icons.play_arrow : Icons.pause,
-                color: _player.isStopped ? _disabledIconColor : Colors.black,
-              ),
+          IconButton(
+            icon: Icon(
+              _player.isPaused ? Icons.play_arrow : Icons.pause,
+              color: _player.isStopped ? _disabledIconColor : Colors.black,
             ),
+            onPressed: _player.isPaused ? resume : _player.isPlaying ? pause : null,
           ),
-          Expanded(child: Column(children: rows))
-        ]));
+          Expanded(child: Column(children: rows)),
+          SizedBox(width: 12)
+        ],
+      ),
+    );
   }
 
   /// Returns the players current state.
@@ -612,25 +608,29 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
       button = _buildPlayButtonIcon(button);
     }
     return Container(
-      decoration: BoxDecoration(
-        color: _backgroundColor,
-        borderRadius: BorderRadius.circular(SoundPlayerUI._barHeight / 2),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildPlayButton(),
-          IconButton(
-            icon: Icon(
-              _player.isPaused ? Icons.play_arrow : Icons.pause,
-              color: _player.isStopped ? _disabledIconColor : Colors.black,
-            ),
-            onPressed: _player.isPaused ? resume : _player.isPlaying ? pause : null,
-          ),
-          Expanded(child: Column(children: rows))
-        ],
-      ),
-    );
+        width: 30,
+        //height: 30,
+        child: Padding(
+            padding: EdgeInsets.only(left: 0, right: 0),
+            child: FutureBuilder<bool>(
+                future: canPlay,
+                builder: (context, asyncData) {
+                  var _canPlay = false;
+                  if (asyncData.connectionState == ConnectionState.done) {
+                    _canPlay = asyncData.data && !__transitioning;
+                  }
+
+                  return InkWell(
+                      onTap: _canPlay &&
+                              (_playState == _PlayState.stopped ||
+                                  _playState == _PlayState.playing ||
+                                  _playState == _PlayState.paused)
+                          ? () {
+                              return _onPlay(context);
+                            }
+                          : null,
+                      child: button);
+                })));
   }
 
   Widget _buildPlayButtonIcon(Widget widget) {
@@ -667,7 +667,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
               disposition.position.inMilliseconds,
               isUtc: true);
           return Text(
-            '${positionDate.minute.toString().padLeft(2, '0')}:${positionDate.second.toString().padLeft(2, '0')} / ${durationDate.minute.toString().padLeft(2, '0')}:${durationDate.second.toString().padLeft(2, '0')}',
+            '${positionDate.minute.toString().padLeft(2, '0')}:${positionDate.second.toString().padLeft(2, '0')} \n ${durationDate.minute.toString().padLeft(2, '0')}:${durationDate.second.toString().padLeft(2, '0')}',
             style: _textStyle,
           );
         });
